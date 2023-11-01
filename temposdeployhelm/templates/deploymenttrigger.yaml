@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "temposdeployhelm.fullname" . }}trigger"
+ 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "temposdeployhelm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "temposdeployhelm.labels" . | nindent 8 }}
+	      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: "{{ .Chart.Name }}-trigger"
+          image: "{{ .Values.image.repository }}/trigger:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TOPIC
+              value: {{ .Values.env.trigger.topic }}
+            - name: RUST_LOG
+              value: "debug"
+            - name: ADDR
+              value: {{ .Values.env.trigger.addr }}
+            - name: TEST
+              value: {{ .Values.env.trigger.test }}
+            - name: SADDR
+              value: {{ .Values.env.trigger.saddr }}
+            - name: MILLIS
+              value: {{ .Values.env.trigger.millis }}

@@ -1,0 +1,6 @@
+FROM ubuntu
+RUN mkdir /home/tempos
+WORKDIR /home/tempos/
+COPY ./target/release/tempos-mom ./
+
+CMD ./tempos-mom 

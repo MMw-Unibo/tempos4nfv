@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "temposdeployhelm.fullname" . }}
+  labels:
+    {{- include "temposdeployhelm.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "temposdeployhelm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "temposdeployhelm.labels" . | nindent 8 }}
+	      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "temposdeployhelm.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: "{{ .Chart.Name }}-trigger"
+          image: "{{ .Values.image.repository }}/trigger:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: TOPIC
+              value: {{ .Values.env.trigger.topic }}
+            - name: ADDR
+              value: {{ .Values.env.trigger.addr }}
+            - name: TEST
+              value: {{ .Values.env.trigger.test }}
+            - name: SADDR
+              value: {{ .Values.env.trigger.saddr }}
+            - name: MILLIS
+              value: {{ .Values.env.trigger.millis }}
+        - name: "{{ .Chart.Name }}-mom"
+          image: "{{ .Values.image.repository }}/mom:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: BQADDR
+              value: {{ .Values.env.mom.bqaddr }}
+            - name: SQADDR
+              value: {{ .Values.env.mom.sqaddr }}
+          ports:
+            - name: "best"
+              containerPort: {{ .Values.service.mom.bestport }}
+              protocol: UDP
+            - name: "strict"
+              containerPort: {{ .Values.service.mom.strictport }}
+              protocol: UDP
+        - name: "{{ .Chart.Name }}-invoker"
+          image: "{{ .Values.image.repository }}/invoker:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: NODE
+              value: {{ .Values.env.inv.node }}
+            - name: TOPICS
+              value: {{ .Values.env.inv.topics }}
+            - name: SADDR
+              value: {{ .Values.env.inv.saddr }}
+            - name: TEST
+              value: {{ .Values.env.inv.test }}
+            - name: WARM
+              value: {{ .Values.env.inv.warm }}
+          ports:
+            - name: "tempos"
+              containerPort: {{ .Values.service.inv.port }}
+              protocol: UDP
+
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

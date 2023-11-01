@@ -1,0 +1,21 @@
+services:
+  trigger:
+    image: trigger
+    build: ./DockerfileInvoker
+    environment:
+      TOPIC: "ciao"
+      ADDR: "192.168.17.72"
+      TEST: "miao"
+      MILLIS: "10"
+  mom:
+    image: mom
+    build: DockerfileMOM
+  invoker:
+    image: invoker
+    build: DockerfileInvoker
+    environment:
+      NODE: "node1"
+      TOPICS: "[ciao]"
+      SADDR: "192.168.17.72"
+      TEST: "miao"
+      WARM: "yes"   

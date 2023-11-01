@@ -1,0 +1,47 @@
+n_pack = 10
+registration_ip = "127.0.0.1:3339"
+load_ip = "127.0.0.1:3340"
+n_azure = 0
+max_node_usage = 0.8
+
+[[tasks]]
+id = 0
+priority = 19
+in_endpoint = "127.0.0.1:3333"
+out_endpoint = "127.0.0.1:3334"
+
+[[tasks]]
+id = 1
+priority = 50
+in_endpoint = "127.0.0.1:3335"
+out_endpoint = "127.0.0.1:3336"
+
+[[tasks]]
+id = 2
+priority = 93
+in_endpoint = "127.0.0.1:3337"
+out_endpoint = "127.0.0.1:3338"
+
+[[nodes]]
+id = "azure_1"
+tipo = 1
+ip = "127.0.0.1:9999/strict/"
+k = 10000
+kind_of_traffic = 0
+kind_of_topic = "strict"
+
+[[nodes]]
+id = "azure_2"
+tipo = 1
+ip = "127.0.0.1:9999/excellent/"
+k = 10000
+kind_of_traffic = 1
+kind_of_topic = "excellent"
+
+[[nodes]]
+id = "azure_3"
+tipo = 1
+ip = "127.0.0.1:9999/besteffort/"
+k = 10000
+kind_of_traffic = 2
+kind_of_topic = "best-effort"

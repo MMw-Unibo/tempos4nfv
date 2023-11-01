@@ -1,0 +1,53 @@
+{
+    "ifname": "eth0",
+    "clockid": "CLOCK_TAI",
+    "queues": [
+        {
+            "map": 0,
+            "count": 1
+        },
+        {
+            "map": 1,
+            "count": 1
+        },
+        {
+            "map": 2,
+            "count": 2
+        }
+    ],
+    "map": [
+        2,
+        2,
+        1,
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+    ],
+    "sched_entries": [
+        {
+            "type": "S",
+            "mask": 1,
+            "time": 300000
+        },
+        {
+            "type": "S",
+            "mask": 2,
+            "time": 300000
+        },
+        {
+            "type": "S",
+            "mask": 4,
+            "time": 300000
+        }
+    ]
+}

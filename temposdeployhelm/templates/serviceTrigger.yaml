@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "temposdeployhelm.fullname" . }}
+spec:
+  type: NodePort
+  ports:
+    - port: 8888
+      targetPort: 8888
+      nodePort: 15584
+      protocol: UDP
+      name: "best"
+  selector:
+    {{- include ".value.ingressservice.trigger" . | nindent 4 }}
+

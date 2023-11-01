@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "temposdeployhelm.fullname" . }}mom"
+  label: "{{- include "temposdeployhelm.selectorLabels" . | nindent 4 }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "temposdeployhelm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "temposdeployhelm.labels" . | nindent 8 }}
+	      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      imagePullSecrets: 
+        - name: "gitlab-secret"
+      containers:
+        - name: "{{ .Chart.Name }}-mom"
+          image: "{{ .Values.image.repository }}/mom:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: BQADDR
+              value: {{ .Values.env.mom.bqaddr }}
+            - name: SQADDR
+              value: {{ .Values.env.mom.sqaddr }}
+            - name: RUST_LOG
+              value: "debug"
+          ports:
+            - name: "best"
+              containerPort: {{ .Values.service.mom.bestport }}
+              protocol: UDP
+            - name: "strict"
+              containerPort: {{ .Values.service.mom.strictport }}
+              protocol: UDP

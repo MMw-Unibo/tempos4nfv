@@ -1,0 +1,18 @@
+vnfd:
+  description: KNF with single KDU using a helm-chart for TEMPOS
+  df:
+  - id: default-df
+  ext-cpd:
+  - id: mgmt-ext
+    k8s-cluster-net: mgmtnet
+  id: tempos_knf
+  k8s-cluster:
+    nets:
+    - id: mgmtnet
+  kdu:
+  - name: ldap
+    helm-chart: temposdeployhelm
+  mgmt-cp: mgmt-ext
+  product-name: tempos_knf
+  provider: Telefonica
+  version: 1.0

@@ -1,0 +1,13 @@
+[workspace]
+
+[package]
+name = "vpn"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+lz4_flex = "0.10.0"
+cryptoxide = "0.4.4"

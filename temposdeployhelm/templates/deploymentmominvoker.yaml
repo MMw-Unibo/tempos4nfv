@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ include "temposdeployhelm.fullname" . }}invoker"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "temposdeployhelm.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "temposdeployhelm.labels" . | nindent 8 }}
+	      {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      imagePullSecrets: 
+        - name: "gitlab-secret"
+      containers:
+        - name: "{{ .Chart.Name }}-invoker"
+          image: "{{ .Values.image.repository }}/invoker:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: NODE
+              value: {{ .Values.env.inv.node }}
+            - name: RUST_LOG
+              value: "debug"
+            - name: TOPICS
+              value: {{ .Values.env.inv.topics }}
+            - name: SADDR
+              value: {{ .Values.env.inv.saddr }}
+            - name: TEST
+              value: {{ .Values.env.inv.test }}
+            - name: WARM
+              value: {{ .Values.env.inv.warm }}
+          ports:
+            - name: "tempos"
+              containerPort: {{ .Values.service.inv.port }}
+              protocol: UDP

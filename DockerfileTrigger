@@ -1,0 +1,6 @@
+FROM ubuntu
+RUN mkdir /home/tempos
+WORKDIR /home/tempos/
+COPY ./target/release/tempos-trigger ./
+
+CMD ./tempos-trigger --topic=$TOPIC --addr=$ADDR --saddr=$SADDR --millis=$MILLIS

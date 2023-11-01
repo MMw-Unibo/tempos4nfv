@@ -1,0 +1,6 @@
+FROM ubuntu
+RUN mkdir /home/tempos
+WORKDIR /home/tempos/
+COPY ./target/release/tempos-invoker ./
+
+CMD ./tempos-invoker --node=$NODE --topics=$TOPICS --saddr=$SADDR --test=$TEST --warm=$WARM

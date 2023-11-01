@@ -1,0 +1,15 @@
+[package]
+name = "tempos-trigger"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.57"
+clap = { workspace = true, features = ["derive"] }
+tempos = { path = "../tempos/" }
+nix = { workspace = true, features = ["net"] }
+libc = { workspace = true }
+log = { workspace = true }
+env_logger = { workspace = true }
